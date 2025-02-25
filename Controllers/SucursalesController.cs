@@ -18,17 +18,17 @@ namespace P01_2022PD651_2022VZ650_PARQUEO.Controllers
         public IActionResult GetAll()
         {
             var sucursales = (from s in _context.Sucursal
-                                           join u in _context.Usuario on s.id_usuario equals u.id_usuario
-                                           select new 
-                                           {
-                                               s.id_sucursal,
-                                               s.nombre,
-                                               s.direccion,
-                                               s.telefono,
-                                               Administrador = u.nombre,
-                                               espacios = s.num_espacios
-                                           }
-                                           ).ToList();
+                              join u in _context.Usuario on s.id_usuario equals u.id_usuario
+                              join p in _context.EspaciosParqueo on s.id_sucursal equals p.id_sucursal into espacios
+                              select new
+                              {
+                                  s.id_sucursal,
+                                  s.nombre,
+                                  s.direccion,
+                                  s.telefono,
+                                  Administrador = u.nombre,
+                                  Espacios = espacios.Count()
+                              }).ToList();
             if (sucursales.Count == 0)
             {
                 return NotFound();
