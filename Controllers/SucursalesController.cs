@@ -40,6 +40,14 @@ namespace P01_2022PD651_2022VZ650_PARQUEO.Controllers
         [Route("Create")]
         public IActionResult Create([FromBody] Sucursales sucursal)
         {
+            Usuarios usuario = (from u in _context.Usuario
+                                where u.id_usuario == sucursal.id_usuario
+                                select u).FirstOrDefault();
+
+            if (usuario.rol != "empleado")
+            {
+                return BadRequest("El usuario no es un empleado");
+            }
             try
             {
                 _context.Sucursal.Add(sucursal);
