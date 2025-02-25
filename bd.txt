@@ -1,0 +1,46 @@
+CREATE TABLE Usuario (
+    id_usuario INT IDENTITY(1,1) PRIMARY KEY,
+    nombre NVARCHAR(100) NOT NULL,
+    correo NVARCHAR(100) UNIQUE NOT NULL,
+    telefono NVARCHAR(20),
+    contrasena NVARCHAR(255) NOT NULL,
+    rol NVARCHAR(50) CHECK (rol IN ('cliente', 'empleado')) NOT NULL
+);
+GO
+
+-- Tabla de Sucursales
+CREATE TABLE Sucursal (
+    id_sucursal INT IDENTITY(1,1) PRIMARY KEY,
+    nombre NVARCHAR(100) NOT NULL,
+    direccion NVARCHAR(255) NOT NULL,
+    telefono NVARCHAR(20),
+    id_usuario INT,
+    num_espacios INT NOT NULL,
+    FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
+);
+GO
+
+-- Tabla de Espacios de Parqueo
+CREATE TABLE EspaciosParqueo (
+    id_espacio INT IDENTITY(1,1) PRIMARY KEY,
+    id_sucursal INT NOT NULL,
+    numero INT NOT NULL,
+    ubicacion NVARCHAR(255) NOT NULL,
+    costo_por_hora DECIMAL(10,2) NOT NULL,
+    estado NVARCHAR(20) CHECK (estado IN ('disponible', 'ocupado')) NOT NULL,
+    FOREIGN KEY (id_sucursal) REFERENCES Sucursal(id_sucursal)
+);
+GO
+
+-- Tabla de Reservas
+CREATE TABLE Reserva (
+    id_reserva INT IDENTITY(1,1) PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    id_espacio INT NOT NULL,
+    fecha DATE NOT NULL,
+    hora_entrada TIME NOT NULL,
+    cantidad_horas INT NOT NULL,
+    FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario),
+    FOREIGN KEY (id_espacio) REFERENCES EspaciosParqueo(id_espacio)
+);
+GO
